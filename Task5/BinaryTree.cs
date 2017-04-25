@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Task5
 {
-    public sealed class BinaryTree<T>
+    public sealed class BinaryTree<T>: IEnumerable<T>, IEnumerable
     {
 
         #region Private Fields
@@ -161,6 +162,20 @@ namespace Task5
             return PostOrder(root);
         }
 
+        public IEnumerator<T> GetEnumerator()
+        {
+            return Inorder().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
+        #region Private Methods
+
         private IEnumerable<T> PostOrder(Node root)
         {
             if (ReferenceEquals(root, null))
@@ -174,7 +189,7 @@ namespace Task5
                 }
             }
 
-            if(!ReferenceEquals(root.Rigth, null))
+            if (!ReferenceEquals(root.Rigth, null))
             {
                 foreach (var node in PostOrder(root.Rigth))
                 {
@@ -185,10 +200,6 @@ namespace Task5
             yield return root.value;
 
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void AddTo(Node node, T value)
         {
