@@ -42,7 +42,10 @@
   <ItemGroup>
     <Compile Include="AbstractMatrix.cs" />
     <Compile Include="DiagonalMatrix.cs" />
+    <Compile Include="IMatrixAdder.cs" />
     <Compile Include="IMatrixVisitor.cs" />
+    <Compile Include="MatrixAdder.cs" />
+    <Compile Include="MatrixExtention.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SquareMatrix.cs" />
     <Compile Include="SymmetricMatrix.cs" />

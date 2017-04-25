@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Task4
 {
-    public abstract class AbstractMatrix<T> : IEnumerable<T>
+    public abstract class AbstractMatrix<T> : IEnumerable<T>, IMatrixAdder<T>
     {
 
         public event EventHandler<ElementChangedEventArgs<T>> ElementChanged = delegate {};
@@ -28,6 +28,13 @@ namespace Task4
             return GetEnumerator();
         }
 
+        public void Accept(IMatrixVisitor<T> matrixVisitor)
+        {
+            if (matrixVisitor == null)
+                throw new ArgumentNullException(nameof(matrixVisitor));
+
+            matrixVisitor.Visit((dynamic)this);
+        }
     }
 
     public class ElementChangedEventArgs<T> : EventArgs

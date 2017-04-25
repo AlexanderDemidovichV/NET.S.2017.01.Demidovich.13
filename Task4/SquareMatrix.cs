@@ -11,6 +11,12 @@ namespace Task4
 
         private readonly T[,] matrix;
 
+        public SquareMatrix(int size)
+        {
+            Size = size;
+            matrix = new T[Size, Size];
+        }
+
         public SquareMatrix(T[,] array)
         {
             if (array == null)
