@@ -28,7 +28,6 @@ namespace Task4
             return GetEnumerator();
         }
 
-
     }
 
     public class ElementChangedEventArgs<T> : EventArgs
@@ -37,16 +36,10 @@ namespace Task4
 
         public int Column { get; }
 
-        public T OldValue { get; }
-
-        public T NewValue { get; }
-
-        public ElementChangedEventArgs(int row, int column, T oldValue, T newValue)
+        public ElementChangedEventArgs(int row, int column)
         {
             Row = row;
-            Column = column;
-            OldValue = oldValue;
-            NewValue = newValue;    
+            Column = column;  
         }
     }
 }

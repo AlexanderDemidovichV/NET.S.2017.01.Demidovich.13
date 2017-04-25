@@ -39,7 +39,7 @@ namespace Task4
                 if (i > Size || j > Size || i <= 0 || j <= 0)
                     throw new IndexOutOfRangeException();
 
-                OnElementChanged(this, new ElementChangedEventArgs<T>(i, j, matrix[--i, --j], value));
+                OnElementChanged(this, new ElementChangedEventArgs<T>(i, j));
 
                 matrix[i, j] = value;
             }
