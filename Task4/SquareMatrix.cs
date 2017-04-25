@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Task4
 {
-    class SquareMatrix<T>: AbstractMatrix<T>
+    public class SquareMatrix<T>: AbstractMatrix<T>
     {
 
         private readonly T[,] matrix;
