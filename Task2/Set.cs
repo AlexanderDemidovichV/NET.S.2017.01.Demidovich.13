@@ -7,23 +7,72 @@ using System.Threading.Tasks;
 
 namespace Task2
 {
-    public class Set<T> : Task2.ISet<T>, IEnumerable<T>, IEnumerable, IEquatable<T> where T : class
+    public class Set<T> : IEnumerable<T>, IEnumerable, IEquatable<Set<T>> where T : class
     {
-        private T[] array;
+        #region Private fields
+
+        private List<T> collection;
 
         private readonly IEqualityComparer<T> equalityComparer;
 
-        public int Count { get; }
+        #endregion
 
-        public IEnumerator<T> GetEnumerator()
+        #region Properties
+
+        /// <summary>
+        /// Gets the number of elements that are contained in a set.
+        /// </summary>
+        public int Count => collection.Count;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new instance of the Set class that is empty and uses the default equality comparer for the set type.
+        /// </summary>
+        public Set() : this(new List<T>(), EqualityComparer<T>.Default)
         {
-            throw new NotImplementedException();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        /// <summary>
+        /// Initializes a new instance of the Set class that uses the default equality comparer for the set type, contains elements copied from the spesified collection.
+        /// </summary>
+        /// <param name="collection">The collection whose elements are copied to the new set.</param>
+        public Set(IEnumerable<T> collection) : this(collection, EqualityComparer<T>.Default)
         {
-            return GetEnumerator();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the Set class that is empty and uses the specified equality comparer for the set type.
+        /// </summary>
+        /// <param name="equalityComparer">The IEqualityComparer implementation to use when comparing values in the set, or null to use default EqualityComparer.</param>
+        public Set(IEqualityComparer<T> equalityComparer) : this(new List<T>(), equalityComparer)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the Set class that uses the specified equality comparer for the set type, contains elements copied from the spesified collection.
+        /// </summary>
+        /// <param name="collection">The collection whose elements are copied to the new set.</param>
+        /// <param name="equalityComparer">The IEqualityComparer implementation to use when comparing values in the set, or null to use default EqualityComparer.</param>
+        public Set(IEnumerable<T> collection, IEqualityComparer<T> equalityComparer)
+        {
+            if (ReferenceEquals(collection, null))
+                throw new ArgumentNullException();
+
+            if (ReferenceEquals(equalityComparer, null))
+                this.equalityComparer = EqualityComparer<T>.Default;
+            else
+                this.equalityComparer = equalityComparer;
+
+            this.collection = new List<T>(collection);
+
+        }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Adds an element to the current set and returns a value to indicate if the element was successfully added.
@@ -32,7 +81,11 @@ namespace Task2
         /// <returns>true if the element is added to the set; false if the element is already in the set.</returns>
         public bool Add(T item)
         {
-            throw new NotImplementedException();
+            if (collection.Contains(item))
+                return false;
+
+            collection.Add(item);
+            return true;
         }
 
         /// <summary>
@@ -42,7 +95,14 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public void UnionWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            foreach (var item in other)
+            {
+                if (!Contains(item))
+                    collection.Add(item);
+            }
         }
 
         /// <summary>
@@ -52,7 +112,12 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public void IntersectWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            var newSet = Intersect(this.collection, other);
+
+            collection = newSet.collection;
         }
 
         /// <summary>
@@ -62,7 +127,14 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public void ExceptWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            foreach (var item in other)
+            {
+                if (Contains(item))
+                    collection.Remove(item);
+            }
         }
 
         /// <summary>
@@ -72,7 +144,14 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            foreach (var item in other)
+            {
+                if (!Contains(item))
+                    collection.Remove(item);
+            }
         }
 
         /// <summary>
@@ -85,7 +164,15 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException"></exception>
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            foreach (var item in this)
+            {
+                if (!other.Contains(item))
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -98,7 +185,14 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            foreach (var item in other)
+                if (!this.Contains(item))
+                    return false;
+
+            return true;
         }
 
         /// <summary>
@@ -111,7 +205,7 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            return this.IsSupersetOf(other) && !this.SetEquals(other);
         }
 
         /// <summary>
@@ -124,7 +218,7 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            return this.IsSubsetOf(other) && !this.SetEquals(other);
         }
 
         /// <summary>
@@ -137,7 +231,17 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public bool Overlaps(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(other, null))
+                throw new ArgumentNullException(nameof(other));
+
+            if (!this.Any() || !other.Any())
+                return true;
+
+            foreach (var item in other)
+                if (this.Contains(item))
+                    return true;
+
+            return false;
         }
 
         /// <summary>
@@ -150,16 +254,13 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public bool SetEquals(IEnumerable<T> other)
         {
-            throw new NotImplementedException();
+            return this.IsSubsetOf(other) && this.IsSupersetOf(other);
         }
 
         /// <summary>
         /// Removes all items.
         /// </summary>
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
+        public void Clear() => collection.Clear();
 
         /// <summary>
         /// Determines whether the set contains a specific value.
@@ -171,7 +272,7 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">other is null.</exception>
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            return collection.Contains(item, equalityComparer);
         }
 
         /// <summary>
@@ -184,12 +285,180 @@ namespace Task2
         /// <exception cref="System.ArgumentNullException">item is null.</exception>
         public bool Remove(T item)
         {
-            throw new NotImplementedException();
+            return collection.Remove(item);
         }
 
-        public bool Equals(T other)
+        /// <summary>
+        /// Determines whether the current set and the specified collection contain the same elements.
+        /// </summary>
+        /// <param name="other">The collection to compare to the current set.</param>
+        /// <returns>
+        /// <c>true</c> if the current set is equal to other; otherwise, <c>false</c>.
+        /// </returns>
+        /// <exception cref="System.ArgumentNullException">other is null.</exception>
+        public bool Equals(Set<T> other)
         {
-            throw new NotImplementedException();
+            return this.SetEquals(other);
         }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a Set object.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (var item in collection)
+                yield return item;
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through a Set object.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns>
+        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        /// </returns>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(obj, null))
+                return false;
+
+            Set<T> set = obj as Set<T>;
+
+            return Equals(set);
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        public override int GetHashCode()
+        {
+            int hash = 13;
+            foreach (var item in collection)
+            {
+                hash = hash * 11 + item.GetHashCode();
+            }
+
+            return hash;
+        }
+
+        #endregion
+
+        #region Public Static
+
+        /// <summary>
+        /// Implements the operator ==.
+        /// </summary>
+        /// <param name="lhs">The first set to compare.</param>
+        /// <param name="rhs">The second set to compare.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator ==(Set<T> lhs, Set<T> rhs)
+        {
+            if (ReferenceEquals(lhs, null) || ReferenceEquals(rhs, null))
+                return false;
+
+            return lhs.Equals(rhs);
+        }
+
+        /// <summary>
+        /// Implements the operator !=.
+        /// </summary>
+        /// <param name="lhs">The first set to compare.</param>
+        /// <param name="rhs">The second set to compare.</param>
+        /// <returns>
+        /// The result of the operator.
+        /// </returns>
+        public static bool operator !=(Set<T> lhs, Set<T> rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        /// <summary>
+        /// Returns the collection wich contain all elements that are present in first collection, second collection, or both.
+        /// </summary>
+        /// <param name="firstSet">The first collection to compare to the other.</param>
+        /// <param name="secondSet">The second collection to compare to the other.</param>
+        /// <returns></returns>
+        public static Set<T> Union(IEnumerable<T> firstSet, IEnumerable<T> secondSet)
+        {
+            if (firstSet == null)
+                throw new ArgumentNullException(nameof(firstSet));
+            if (secondSet == null)
+                throw new ArgumentNullException(nameof(secondSet));
+            if (firstSet == secondSet)
+                return new Set<T>(firstSet);
+
+            var newSet = new Set<T>(firstSet);
+            newSet.UnionWith(secondSet);
+
+            return newSet;
+        }
+
+        /// <summary>
+        /// Returns the collection wich contain all elements that are present in first collection, but not in second collection.
+        /// </summary>
+        /// <param name="firstSet">The collection to compare to the other.</param>
+        /// <param name="secondSet">The collection of items to remove from the other.</param>
+        /// <returns></returns>
+        public static Set<T> Except(IEnumerable<T> firstSet, IEnumerable<T> secondSet)
+        {
+            if (firstSet == null)
+                throw new ArgumentNullException(nameof(firstSet));
+            if (secondSet == null)
+                throw new ArgumentNullException(nameof(secondSet));
+            if (firstSet == secondSet)
+                return new Set<T>();
+
+            var newSet = new Set<T>(firstSet);
+            newSet.ExceptWith(secondSet);
+
+            return newSet;
+        }
+
+        /// <summary>
+        /// Returns the collection wich contain only elements that are present in both collections.
+        /// </summary>
+        /// <param name="firstSet">The first collection to compare to the other.</param>
+        /// <param name="secondSet">The second collection to compare to the other.</param>
+        /// <returns></returns>
+        public static Set<T> Intersect(IEnumerable<T> firstSet, IEnumerable<T> secondSet)
+        {
+            if (firstSet == null)
+                throw new ArgumentNullException(nameof(firstSet));
+            if (secondSet == null)
+                throw new ArgumentNullException(nameof(secondSet));
+            if (firstSet == secondSet)
+                return new Set<T>(firstSet);
+
+            var newSet = new Set<T>();
+            foreach (var item in firstSet)
+            {
+                if (secondSet.Contains(item))
+                    newSet.Add(item);
+            }
+
+            return newSet;
+        }
+
+        #endregion
+
     }
 }

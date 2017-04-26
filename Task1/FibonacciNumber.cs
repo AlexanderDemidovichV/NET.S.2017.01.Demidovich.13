@@ -6,29 +6,39 @@ using System.Threading.Tasks;
 
 namespace Task1
 {
+
+    /// <summary>
+    /// Provides methods to work with Fibonacci Numbers
+    /// </summary>
     public static class FibonacciNumber
     {
+
+        /// <summary>
+        /// Gets the Fibonacci Numbers sequence.
+        /// </summary>
+        /// <returns>An IEnumerable whose elements are the Fibonacci Numbers.</returns>
         public static IEnumerable<long> GetFibonacciSequence()
         {
             yield return 1;
             yield return 1;
-            long a = 1;
-            long b = 1;
+            long previous = 1;
+            long current = 1;
             while (true)
             {
-                long c;
+                long next;
 
                 try
                 {
-                    c = unchecked(a + b);
+                    next = unchecked(previous + current);
                 }
                 catch (OverflowException ex)
                 {
                     yield break;
                 }
-                a = b;
-                b = c;
-                yield return c;
+
+                yield return next;
+                previous = current;
+                current = next;
             }
         }
     }
