@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Task3
 {
+    /// <summary>
+    /// Represents behavior of Square
+    /// </summary>
+    /// <seealso cref="Task3.Figure" />
     public class Square: Figure
     {
         public double A { get; }

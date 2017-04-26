@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Task3
 {
+    /// <summary>
+    /// Represents behavior of Circle
+    /// </summary>
+    /// <seealso cref="Task3.Figure" />
     public class Circle: Figure
     {
         public double Radius { get; }

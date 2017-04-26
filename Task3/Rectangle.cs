@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Task3
 {
+    /// <summary>
+    /// Represents behavior of Rectangle
+    /// </summary>
+    /// <seealso cref="Task3.Figure" />
     public class Rectangle: Figure
     {
         public double A { get; }

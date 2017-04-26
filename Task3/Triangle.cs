@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Task3
 {
+    /// <summary>
+    /// Represents behavior of triangle
+    /// </summary>
+    /// <seealso cref="Task3.Figure" />
     public class Triangle: Figure
     {
         public double A { get; }
@@ -17,8 +21,12 @@ namespace Task3
 
         public Triangle(double a, double b, double c)
         {
+            if (a <= 0 || b <= 0 || c <= 0)
+                throw new ArgumentOutOfRangeException();
+
             if (!isTriangle(a, b, c))
                 throw new ArgumentOutOfRangeException();
+
             A = a;
             B = b;
             C = c;
