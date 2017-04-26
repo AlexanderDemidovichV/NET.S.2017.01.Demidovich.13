@@ -8,10 +8,10 @@ namespace Task4
 {
     public interface IMatrixVisitor<T>
     {
-        void Visit(SquareMatrix<T> matrix);
+        void Visit(SquareMatrix<T> matrixA);
 
-        void Visit(SymmetricMatrix<T> matrix);
+        void Visit(SymmetricMatrix<T> matrixA);
 
-        void Visit(DiagonalMatrix<T> matrix);
+        void Visit(DiagonalMatrix<T> matrixA);
     }
 }

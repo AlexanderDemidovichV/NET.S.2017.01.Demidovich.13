@@ -72,19 +72,19 @@ namespace Task4
 
         #region Public Methods
 
-        public void Visit(DiagonalMatrix<T> matrix)
+        public void Visit(DiagonalMatrix<T> matrixA)
         {
-            Sum = SumMatrix(matrix, matrixB);
+            Sum = SumMatrix(matrixA, matrixB);
         }
 
-        public void Visit(SymmetricMatrix<T> matrix)
+        public void Visit(SymmetricMatrix<T> matrixA)
         {
-            Sum = SumMatrix(matrix, matrixB);
+            Sum = SumMatrix(matrixA, matrixB);
         }
 
-        public void Visit(SquareMatrix<T> matrix)
+        public void Visit(SquareMatrix<T> matrixA)
         {
-            Sum = SumMatrix(matrix, matrixB);
+            Sum = SumMatrix(matrixA, matrixB);
         }
 
         #endregion

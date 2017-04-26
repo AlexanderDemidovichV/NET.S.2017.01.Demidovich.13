@@ -8,49 +8,77 @@ using System.Threading.Tasks;
 
 namespace Task5
 {
-    public sealed class BinaryTree<T>: IEnumerable<T>, IEnumerable
+    /// <summary>
+    /// This class represents a binary search tree.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
+    public sealed class BinaryTree<T>: IEnumerable<T>
     {
 
         #region Private Fields
 
+        /// <summary>
+        /// Main root of binary search tree.
+        /// </summary>
         private Node root;
 
+        /// <summary>
+        /// Number of elements in binary search tree.
+        /// </summary>
         private int count;
 
+        /// <summary>
+        /// Custom comparator.
+        /// </summary>
         private IComparer<T> comparer;
 
         #endregion
 
         #region Constructors
 
-        public BinaryTree(IComparer<T> comparer)
+        /// <summary>
+        /// Constructor which takes custom comparator as an argument.
+        /// </summary>
+        public BinaryTree(IEnumerable<T> collection, IComparer<T> comparer)
         {
             if (ReferenceEquals(comparer, null))
                 throw new ArgumentNullException();
 
             root = null;
-            count = 0;
+
+            if (ReferenceEquals(collection, null))
+                count = 0;
+            else
+            {
+                foreach (var element in collection)
+                    Add(element);
+            }
+            
             this.comparer = comparer;
         }
 
-        public BinaryTree() : this(Comparer<T>.Default) { }
+        public BinaryTree() : this(null, Comparer<T>.Default) { }
 
+        public BinaryTree(IEnumerable<T> collection, Comparison<T> comparer) : this(collection, Comparer<T>.Default) { }
+        
         #endregion
 
-        #region Properties
+            #region Properties
 
-        public int Count
-        {
-            get
-            {
-                return count;
-            }
-        }
+            /// <summary>
+            /// Number of elements in binary search tree.
+            /// </summary>
+        public int Count => count;
 
         #endregion
 
         #region Public Methods
 
+        /// <summary>
+        /// This method adds elements to the binary search tree.
+        /// </summary>
+        /// <param name="value">Value which will be added.</param>
         public bool Add(T value)
         {
             if (value.Equals(default(T)))
@@ -73,6 +101,11 @@ namespace Task5
             return false;
         }
 
+        /// <summary>
+        /// This method finds binary search tree's node by given value.
+        /// </summary>
+        /// <param name="value">Value which one of nodes might contains.</param>
+        /// <returns>Returns node if the binary search tree contains this value or null if it not.</returns>
         public Node FindNode(T item)
         {
             int num;
@@ -96,6 +129,10 @@ namespace Task5
             return false;
         }
 
+        /// <summary>
+        /// Display the data part of the root (or current node). Traverse the left subtree by recursively calling the pre-order function. Traverse the right subtree by recursively calling the pre-order function.
+        /// </summary>
+        /// <returns>Returns IEnumerable.</returns>
         public IEnumerable<T> Preorder()
         {
             if (ReferenceEquals(root, null))
@@ -126,6 +163,10 @@ namespace Task5
             }
         }
 
+        /// <summary>
+        /// Traverse the left subtree by recursively calling the in-order function. Display the data part of the root (or current node). Traverse the right subtree by recursively calling the in-order function.
+        /// </summary>
+        /// <returns>Returns IEnumerable.</returns>
         public IEnumerable<T> Inorder()
         {
             if (ReferenceEquals(root, null))
@@ -157,16 +198,32 @@ namespace Task5
             }
         }
 
+        /// <summary>
+        /// Post-order traversal with recursion. Traverse the left subtree by recursively calling the post-order function. Traverse the right subtree by recursively calling the post-order function. Display the data part of the root (or current node).
+        /// </summary>
+        /// <returns>Returns IEnumerable.</returns>
         public IEnumerable<T> Postorder()
         {
             return PostOrder(root);
         }
 
+        /// <summary>
+        /// Returns an enumerator.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.Collections.Generic.IEnumerator`1" /> that can be used to iterate through the collection.
+        /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
             return Inorder().GetEnumerator();
         }
 
+        /// <summary>
+        /// Returns an enumerator.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
