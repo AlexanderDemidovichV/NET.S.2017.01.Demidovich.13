@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Task2
 {
-    public class Set<T> : IEnumerable<T>, IEnumerable, IEquatable<Set<T>> where T : class
+    public class Set<T> : IEnumerable<T>, IEquatable<Set<T>> where T : class
     {
         #region Private fields
 
